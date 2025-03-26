@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import connectMongoDB from "@/app/editTopic/[id]/libs/mongodb";
-import Topic from "@/app/editTopic/[id]/libs/models/topic";
+import connectMongoDB from "../../../app/editTopic/[id]/libs/mongodb";
+import Topic from "../../../app/editTopic/[id]/libs/models/topic";
 import multer from "multer";
 import { writeFile } from "fs/promises";
 import path from "path";

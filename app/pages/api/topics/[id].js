@@ -1,5 +1,5 @@
 import dbConnect from "@/utils/dbConnect";
-import Topic from "@/app/editTopic/[id]/libs/models/topic";
+import Topic from "../../../editTopic/[id]/libs/models/topic";
 
 export default async function handler(req, res) {
   await dbConnect(); // Ensure DB connection

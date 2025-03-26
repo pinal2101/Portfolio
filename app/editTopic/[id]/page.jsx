@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation"; // Correct import for routing
 import { useParams } from "next/navigation"; // Correct import for accessing route params
-import EditTopicForm from "@/components/EditTopicForm";
+import EditTopicForm from "../../../components/EditTopicForm";
 
 const getTopicById = async (id) => {
   try {

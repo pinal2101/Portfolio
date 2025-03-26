@@ -1,5 +1,5 @@
-import Topic from "@/app/editTopic/[id]/libs/models/topic";
-import connectMongoDB from "@/app/editTopic/[id]/libs/mongodb";
+import Topic from "../../../editTopic/[id]/libs/models/topic";
+import connectMongoDB from "../../../editTopic/[id]/libs/mongodb";
 import { NextResponse } from "next/server";
 
 // ✅ Handle PUT request (Update topic)
