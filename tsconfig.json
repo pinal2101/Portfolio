@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "target": "es6", // Specifies ECMAScript target version
+    "module": "commonjs", // Module code generation
+    "strict": true, // Enables strict mode
+    "esModuleInterop": true, // Ensures compatibility with ES Modules
+    "skipLibCheck": true, // Skip type checking of declaration files
+    "forceConsistentCasingInFileNames": true // Ensure consistent casing in file names
+    ,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "noEmit": true,
+    "incremental": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": [
+    "./pages/**/*",
+    "./src/**/*",
+    ".next/types/**/*.ts"
+  ] // Specify directories to include in the compilation
+  ,
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -1,24 +1,30 @@
-'use client';
 
-import { HiOutlineTrash } from "react-icons/hi";
-import { useRouter } from "next/navigation";
+"use client";
 
-export default function RemoveBtn ({ id }) {
-     const router = useRouter();
-     const RemoveTopic = async () => {
-          const confirmed = confirm ('Are you sure?');
-          if (confirmed) {
-              const res = await fetch(`http://localhost:3000/api/topics?id=${id}`,{
-                    method: "DELETE",
-               });
-               if(res.ok) {
-               router.refresh();
-               }
-          }
-     };
-     return (
-       <button  onClick={RemoveTopic}className="text-red-400">
-           <HiOutlineTrash size={24}/>
-     </button>
-     );
+import { IconButton, Tooltip } from "@mui/material";
+import { Delete as DeleteIcon } from "@mui/icons-material";
+
+const RemoveBtn = ({ id, onDeleteSuccess }) => {
+  const handleDelete = async () => {
+    if (!confirm("Are you sure you want to delete this item?")) return;
+
+    try {
+      const res = await fetch(`http://localhost:3000/api/topics?id=${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete the topic");
+
+      if (onDeleteSuccess) onDeleteSuccess(id); // ✅ Ensure function exists before calling
+    } catch (error) {
+      console.error("Error deleting topic:", error);
+    }
+  };
+
+  return (
+    <Tooltip title="Delete">
+      <IconButton color="error" onClick={handleDelete}>
+        <DeleteIcon />
+      </IconButton>
+    </Tooltip>
+  );
 };
+
+export default RemoveBtn;
