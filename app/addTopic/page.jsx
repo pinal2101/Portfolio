@@ -190,7 +190,7 @@ export default function AddTopicPage() {
     });
 
     try {
-      const response = await fetch("http://localhost:3000/api/topics", {
+      const response = await fetch(`/api/topics`, {
         method: "POST",
         body: data, // Send as FormData
       });

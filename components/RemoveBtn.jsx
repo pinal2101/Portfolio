@@ -9,7 +9,7 @@ const RemoveBtn = ({ id, onDeleteSuccess }) => {
     if (!confirm("Are you sure you want to delete this item?")) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/api/topics?id=${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/topics?id=${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to delete the topic");
 
       if (onDeleteSuccess) onDeleteSuccess(id); // ✅ Ensure function exists before calling

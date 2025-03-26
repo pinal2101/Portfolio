@@ -11,7 +11,7 @@ export default function ProductPage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/topics", {
+        const res = await fetch(`/api/topics`, {
           cache: "no-store",
         });
         if (!res.ok) throw new Error("Failed to fetch products");
@@ -31,7 +31,7 @@ export default function ProductPage() {
     if (!confirm("Are you sure you want to delete this product?")) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/api/topics/${id}`, {
+      const res = await fetch(`/api/topics/${id}`, {
         method: "DELETE",
       });
 
