@@ -3,27 +3,27 @@ import connectMongoDB from "../../../editTopic/[id]/libs/mongodb";
 import { NextResponse } from "next/server";
 
 // ✅ Handle PUT request (Update topic)
-export async function PUT(request, context ) {
-  //console.log('paramsbiknk',params.id);
+export async function PUT(request, { params } ) {
+  
     try {
         await connectMongoDB();
         //const  { id } = params;
-        const id = context.params.id;
+        const { id } = params; // ✅ Extract `id` correctly
         // ✅ Parse request body
         const {
-            newprojectname: projectname,
-            newwebsitelink: websitelink,
-            newtechnology: technology,
-            newdescription: description,
-            newpagebuilder: pagebuilder,
-            newclientname: clientname,
-            newclientinvoices: clientinvoices,
-            newbidplatform: bidplatform,
-            newbidplatformURL: bidplatformURL,
-            newinvoiceamount: invoiceamount,
-            newprojectstartdate: projectstartdate,
-            newcompletiondate: completiondate,
-            newtestimonials: testimonials
+            projectname: projectname,
+            websitelink: websitelink,
+            technology: technology,
+            description: description,
+            pagebuilder: pagebuilder,
+            clientname: clientname,
+            clientinvoices: clientinvoices,
+            bidplatform: bidplatform,
+            bidplatformURL: bidplatformURL,
+            invoiceamount: invoiceamount,
+            projectstartdate: projectstartdate,
+            completiondate: completiondate,
+            testimonials: testimonials
         } = await request.json();  // ✅ Fix: await request.json()
 
         // ✅ Update the topic in the database
@@ -50,12 +50,13 @@ export async function PUT(request, context ) {
 }
 
 // ✅ Handle GET request (Fetch topic)
-export async function GET(request, context) {
+export async function GET(request, { params }) {
   try {
     await connectMongoDB();
-    const id = context.params.id;  // ✅ Correct way to extract params
+    const { id } = params; // ✅ Extract `id` correctly
 
     const topic = await Topic.findById(id);
+    
     if (!topic) {
       return NextResponse.json({ error: "Topic not found" }, { status: 404 });
     }
@@ -68,52 +69,3 @@ export async function GET(request, context) {
 }
 
 
-// import { NextResponse } from "next/server";
-// import connectMongoDB from "@/app/editTopic/[id]/libs/mongodb";
-// import Topic from "@/app/editTopic/[id]/libs/models/topic";
-
-// // ✅ Handle GET request
-// export async function GET(req, { params }) {
-  
-  
-//   try {
-//     await connectMongoDB();
-//     const topic = await Topic.findById(params.id);
-
-//     if (!topic) return NextResponse.json({ error: "Topic not found" }, { status: 404 });
-
-//     return NextResponse.json(topic, { status: 200 });
-//   } catch (error) {
-//     return NextResponse.json({ error: "Failed to fetch topic" }, { status: 500 });
-//   }
-// }
-
-// // ✅ Handle PUT request
-// export async function PUT(req, { params}) {
-//   console.log('params', params);
-  
-//   try {
-//     await connectMongoDB();
-//     const body = await req.json();
-    
-
-//     const updatedTopic = await Topic.findByIdAndUpdate(req.params.id, body, { new: true });
-
-//     if (!updatedTopic) return NextResponse.json({ error: "Topic not found" }, { status: 404 });
-
-//     return NextResponse.json(updatedTopic, { status: 200 });
-//   } catch (error) {
-//     return NextResponse.json({ error: "Failed to update topic" }, { status: 500 });
-//   }
-// }
-
-// // ✅ Handle DELETE request
-// export async function DELETE(req, { params }) {
-//   try {
-//     await connectMongoDB();
-//     await Topic.findByIdAndDelete(params.id);
-//     return NextResponse.json({ message: "Topic deleted successfully" }, { status: 200 });
-//   } catch (error) {
-//     return NextResponse.json({ error: "Failed to delete topic" }, { status: 500 });
-//   }
-// }

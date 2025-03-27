@@ -1,106 +1,347 @@
-"use client";
+// import { useState, useEffect } from "react";
+// import { useRouter } from "next/navigation";
 
+// export default function EditTopicForm({ id, topic }) {
+//   const router = useRouter();
+ 
+
+//   // ✅ Ensure data is initialized correctly
+//   const [formData, setFormData] = useState({
+//     projectname: topic?.topic?.projectname || "",
+//     websitelink: topic?.topic?.websitelink || "",
+//     technology: topic?.topic?.technology || "",
+//     description: topic?.topic?.description || "",
+//     pagebuilder: topic?.topic?.pagebuilder || "",
+//     clientname: topic?.topic?.clientname || "",
+//     clientinvoices: topic?.topic?.clientinvoices || "",
+//     bidplatform: topic?.topic?.bidplatform || "",
+//     bidplatformURL: topic?.topic?.bidplatformURL || "",
+//     invoiceamount: topic?.topic?.invoiceamount || "",
+//     projectstartdate: topic?.topic?.projectstartdate 
+//       ? new Date(topic.topic.projectstartdate).toISOString().split("T")[0] 
+//       : "",
+//     completiondate: topic?.topic?.completiondate 
+//       ? new Date(topic.topic.completiondate).toISOString().split("T")[0] 
+//       : "",
+//     testimonials: topic?.topic?.testimonials || "",
+//   });
+
+//   // ✅ Ensure state updates when topic changes
+//   useEffect(() => {
+//     setFormData({
+//       projectname: topic?.topic?.projectname || "",
+//       websitelink: topic?.topic?.websitelink || "",
+//       technology: topic?.topic?.technology || "",
+//       description: topic?.topic?.description || "",
+//       pagebuilder: topic?.topic?.pagebuilder || "",
+//       clientname: topic?.topic?.clientname || "",
+//       clientinvoices: topic?.topic?.clientinvoices || "",
+//       bidplatform: topic?.topic?.bidplatform || "",
+//       bidplatformURL: topic?.topic?.bidplatformURL || "",
+//       invoiceamount: topic?.topic?.invoiceamount || "",
+//       projectstartdate: topic?.topic?.projectstartdate 
+//         ? new Date(topic.topic.projectstartdate).toISOString().split("T")[0] 
+//         : "",
+//       completiondate: topic?.topic?.completiondate 
+//         ? new Date(topic.topic.completiondate).toISOString().split("T")[0] 
+//         : "",
+//       testimonials: topic?.topic?.testimonials || "",
+//     });
+//   }, [topic]);
+
+//   const handleChange = (e) => {
+//     setFormData({ ...formData, [e.target.name]: e.target.value });
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     console.log("Form Data being sent:", formData); // Debugging line
+
+//     try {
+//       const res = await fetch(`/api/topics/${id}`, {
+//         method: "PUT",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify(formData),
+//       }      
+//     );
+    
+//     console.log("API Response:", res);  // Log API response for further debugging
+
+      
+
+//       if (!res.ok) {
+//         throw new Error("Failed to update topic");
+//       }
+
+//       router.push("/"); // ✅ Redirect after successful update
+//     } catch (error) {
+//       console.error("Update failed:", error);
+//     }
+//   };
+
+//   return (
+//     <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
+//       <h2 className="text-2xl font-bold text-gray-700 mb-6 text-center">Edit Project</h2>
+//       <form onSubmit={handleSubmit} className="space-y-4">
+//         <div className="grid grid-cols-2 gap-4">
+//           <input name="projectname" value={formData.projectname} onChange={handleChange} placeholder="Project Name" className="input-field" />
+//           <input name="websitelink" value={formData.websitelink} onChange={handleChange} placeholder="Website Link" className="input-field" />
+//         </div>
+
+//         <input name="technology" value={formData.technology} onChange={handleChange} placeholder="Technology" className="input-field" />
+//         <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Description" className="input-field" />
+
+//         <div className="grid grid-cols-2 gap-4">
+//           <input name="pagebuilder" value={formData.pagebuilder} onChange={handleChange} placeholder="Page Builder" className="input-field" />
+//           <input name="clientname" value={formData.clientname} onChange={handleChange} placeholder="Client Name" className="input-field" />
+//         </div>
+
+//         <input name="clientinvoices" value={formData.clientinvoices} onChange={handleChange} placeholder="Client Invoices" className="input-field" />
+//         <input name="bidplatform" value={formData.bidplatform} onChange={handleChange} placeholder="Bid Platform" className="input-field" />
+//         <input name="bidplatformURL" value={formData.bidplatformURL} onChange={handleChange} placeholder="Bid Platform URL" className="input-field" />
+
+//         <input name="invoiceamount" type="number" value={formData.invoiceamount} onChange={handleChange} placeholder="Invoice Amount" className="input-field" />
+
+//         <div className="grid grid-cols-2 gap-4">
+//           <input
+//             name="projectstartdate"
+//             type="date"
+//             value={formData.projectstartdate}
+//             onChange={handleChange}
+//             className="input-field"
+//           />
+//           <input
+//             name="completiondate"
+//             type="date"
+//             value={formData.completiondate}
+//             onChange={handleChange}
+//             className="input-field"
+//           />
+//         </div>
+
+//         <textarea name="testimonials" value={formData.testimonials} onChange={handleChange} placeholder="Testimonials" className="input-field" />
+
+//         <button type="submit" className="btn-primary">Update Topic</button>
+//       </form>
+//     </div>
+//   );
+// }
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-export default function EditTopicForm({ id }) {
-  const [project, setProject] = useState({
-    projectname: "",
-    websitelink: "",
-    technology: "",
-    description: "",
-    pagebuilder: "",
-    clientname: "",
-    clientinvoices: "",
-    bidplatform: "",
-    bidplatformURL: "",
-    invoiceamount: "",
-    projectstartdate: "",
-    completiondate: "",
-    testimonials: "",
-  });
-
-  const [loading, setLoading] = useState(true);
+export default function EditTopicForm({ id, topic }) {
   const router = useRouter();
 
+  // ✅ Ensure data is initialized correctly
+  const [formData, setFormData] = useState({
+    projectname: topic?.topic?.projectname || "",
+    websitelink: topic?.topic?.websitelink || "",
+    technology: topic?.topic?.technology || "",
+    description: topic?.topic?.description || "",
+    pagebuilder: topic?.topic?.pagebuilder || "",
+    clientname: topic?.topic?.clientname || "",
+    clientinvoices: topic?.topic?.clientinvoices || [], // Initialize as an array
+    bidplatform: topic?.topic?.bidplatform || "",
+    bidplatformURL: topic?.topic?.bidplatformURL || "",
+    invoiceamount: topic?.topic?.invoiceamount || "",
+    projectstartdate: topic?.topic?.projectstartdate
+      ? new Date(topic.topic.projectstartdate).toISOString().split("T")[0]
+      : "",
+    completiondate: topic?.topic?.completiondate
+      ? new Date(topic.topic.completiondate).toISOString().split("T")[0]
+      : "",
+    testimonials: topic?.topic?.testimonials || "",
+  });
+
+  // ✅ Ensure state updates when topic changes
   useEffect(() => {
-    if (!id) return;
-
-    const fetchProject = async () => {
-      try {
-        const res = await fetch(`/api/topics?id=${id}`); // ✅ Ensure correct API call
-        if (!res.ok) throw new Error(`Failed to fetch project. Status: ${res.status}`);
-        
-        const data = await res.json();
-        const fetchedProject = data?.topic || data; // ✅ Ensure correct response format
-
-        // ✅ Convert date fields to YYYY-MM-DD format for input compatibility
-        setProject({
-          ...fetchedProject,
-          projectstartdate: fetchedProject.projectstartdate ? new Date(fetchedProject.projectstartdate).toISOString().split("T")[0] : "",
-          completiondate: fetchedProject.completiondate ? new Date(fetchedProject.completiondate).toISOString().split("T")[0] : "",
-        });
-      } catch (error) {
-        console.error("Error fetching project:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProject();
-  }, [id]);
+    setFormData({
+      projectname: topic?.topic?.projectname || "",
+      websitelink: topic?.topic?.websitelink || "",
+      technology: topic?.topic?.technology || "",
+      description: topic?.topic?.description || "",
+      pagebuilder: topic?.topic?.pagebuilder || "",
+      clientname: topic?.topic?.clientname || "",
+      clientinvoices: topic?.topic?.clientinvoices || [],
+      bidplatform: topic?.topic?.bidplatform || "",
+      bidplatformURL: topic?.topic?.bidplatformURL || "",
+      invoiceamount: topic?.topic?.invoiceamount || "",
+      projectstartdate: topic?.topic?.projectstartdate
+        ? new Date(topic.topic.projectstartdate).toISOString().split("T")[0]
+        : "",
+      completiondate: topic?.topic?.completiondate
+        ? new Date(topic.topic.completiondate).toISOString().split("T")[0]
+        : "",
+      testimonials: topic?.topic?.testimonials || "",
+    });
+  }, [topic]);
 
   const handleChange = (e) => {
-    setProject((prevProject) => ({
-      ...prevProject,
-      [e.target.name]: e.target.value,
-    }));
+    const { name, value } = e.target;
+
+    // Ensure that clientinvoices is handled as an array of strings
+    if (name === "clientinvoices") {
+      // Split clientinvoices value into an array if it's a string
+      const invoicePaths = value.split(',').map((path) => path.trim()); // Split and clean up file paths
+
+      setFormData({
+        ...formData,
+        [name]: invoicePaths, // Store clientinvoices as an array of file paths
+      });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+
+    console.log("Updated Form Data:", { ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!project.projectname || !project.websitelink || !project.technology) {
-      alert("Please fill all required fields.");
-      return;
-    }
+    // Ensure clientinvoices is an array of strings when submitting
+    const updatedFormData = {
+      ...formData,
+      clientinvoices: formData.clientinvoices, // Already an array of file paths
+    };
+
+    console.log("Form Data being sent:", updatedFormData);
 
     try {
-      const res = await fetch(`/api/topics?id=${id}`, { // ✅ Corrected API request
+      const res = await fetch(`/api/topics/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(project),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedFormData),
       });
 
-      if (!res.ok) throw new Error(`Failed to update project. Status: ${res.status}`);
+      if (!res.ok) {
+        throw new Error("Failed to update topic");
+      }
 
-      router.push("/");
+      const data = await res.json();
+      console.log("API Response:", data);
+
+      // Redirect after successful update
+      router.push("/"); 
     } catch (error) {
-      console.error("Error updating project:", error);
+      console.error("Update failed:", error);
     }
   };
 
-  if (loading) return <p className="text-center">Loading...</p>;
-
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md">
-      <input name="projectname" value={project.projectname} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full mb-3" type="text" placeholder="Project Name" required />
-      <input name="websitelink" value={project.websitelink} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full mb-3" type="url" placeholder="Website Link" required />
-      <input name="technology" value={project.technology} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full mb-3" type="text" placeholder="Technology" required />
-      <textarea name="description" value={project.description} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full mb-3" placeholder="Project Description"></textarea>
-      <input name="pagebuilder" value={project.pagebuilder} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full mb-3" type="text" placeholder="Page Builder" />
-      <input name="clientname" value={project.clientname} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full mb-3" type="text" placeholder="Client Name" />
-      <input name="clientinvoices" value={project.clientinvoices} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full mb-3" type="text" placeholder="Client Invoices" />
-      <input name="bidplatform" value={project.bidplatform} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full mb-3" type="text" placeholder="Bid Platform" />
-      <input name="bidplatformURL" value={project.bidplatformURL} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full mb-3" type="url" placeholder="Bid Platform URL" />
-      <input name="invoiceamount" value={project.invoiceamount} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full mb-3" type="number" placeholder="Invoice Amount" />
-      <input name="projectstartdate" value={project.projectstartdate} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full mb-3" type="date" />
-      <input name="completiondate" value={project.completiondate} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full mb-3" type="date" />
-      <textarea name="testimonials" value={project.testimonials} onChange={handleChange} className="border px-4 py-2 rounded-lg w-full mb-3" placeholder="Testimonials"></textarea>
+    <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold text-gray-700 mb-6 text-center">Edit Project</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <input
+            name="projectname"
+            value={formData.projectname}
+            onChange={handleChange}
+            placeholder="Project Name"
+            className="input-field"
+          />
+          <input
+            name="websitelink"
+            value={formData.websitelink}
+            onChange={handleChange}
+            placeholder="Website Link"
+            className="input-field"
+          />
+        </div>
 
-      <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition">Update Project</button>
-    </form>
+        <input
+          name="technology"
+          value={formData.technology}
+          onChange={handleChange}
+          placeholder="Technology"
+          className="input-field"
+        />
+        <textarea
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          placeholder="Description"
+          className="input-field"
+        />
+
+        <div className="grid grid-cols-2 gap-4">
+          <input
+            name="pagebuilder"
+            value={formData.pagebuilder}
+            onChange={handleChange}
+            placeholder="Page Builder"
+            className="input-field"
+          />
+          <input
+            name="clientname"
+            value={formData.clientname}
+            onChange={handleChange}
+            placeholder="Client Name"
+            className="input-field"
+          />
+        </div>
+
+        <textarea
+          name="clientinvoices"
+          value={formData.clientinvoices.join(",")} // Join array as a comma-separated string for input field
+          onChange={handleChange}
+          placeholder="Client Invoices (comma-separated file paths)"
+          className="input-field"
+        />
+        <input
+          name="bidplatform"
+          value={formData.bidplatform}
+          onChange={handleChange}
+          placeholder="Bid Platform"
+          className="input-field"
+        />
+        <input
+          name="bidplatformURL"
+          value={formData.bidplatformURL}
+          onChange={handleChange}
+          placeholder="Bid Platform URL"
+          className="input-field"
+        />
+
+        <input
+          name="invoiceamount"
+          type="number"
+          value={formData.invoiceamount}
+          onChange={handleChange}
+          placeholder="Invoice Amount"
+          className="input-field"
+        />
+
+        <div className="grid grid-cols-2 gap-4">
+          <input
+            name="projectstartdate"
+            type="date"
+            value={formData.projectstartdate}
+            onChange={handleChange}
+            className="input-field"
+          />
+          <input
+            name="completiondate"
+            type="date"
+            value={formData.completiondate}
+            onChange={handleChange}
+            className="input-field"
+          />
+        </div>
+
+        <textarea
+          name="testimonials"
+          value={formData.testimonials}
+          onChange={handleChange}
+          placeholder="Testimonials"
+          className="input-field"
+        />
+
+        <button type="submit" className="btn-primary">
+          Update Topic
+        </button>
+      </form>
+    </div>
   );
 }
-
-

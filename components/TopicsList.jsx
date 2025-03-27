@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import Link from "next/link";
@@ -79,19 +81,21 @@ const TopicsList = () => {
                   <TableCell>{t.pagebuilder}</TableCell>
                   <TableCell>{t.clientname}</TableCell>
 
-                  {/* ✅ Display Client Invoice Images */}
+                  {/* ✅ Fixed: Ensure `clientinvoices` is an array before mapping */}
                   <TableCell>
                     {Array.isArray(t.clientinvoices) && t.clientinvoices.length > 0 ? (
                       t.clientinvoices.map((file, index) => (
-                        <div key={index} className="p-1">
-                          <a href={file} target="_blank" rel="noopener noreferrer">
-                            <img
-                              src={file}
-                              alt={`Invoice ${index + 1}`}
-                              className="w-16 h-16 object-cover border rounded-md shadow-md hover:shadow-lg"
-                            />
-                          </a>
-                        </div>
+                        file ? (
+                          <div key={index} className="p-1">
+                            <a href={file} target="_blank" rel="noopener noreferrer">
+                              <img
+                                src={file}
+                                alt={`Invoice ${index + 1}`}
+                                className="w-16 h-16 object-cover border rounded-md shadow-md hover:shadow-lg"
+                              />
+                            </a>
+                          </div>
+                        ) : null
                       ))
                     ) : (
                       <Typography variant="body2" color="textSecondary">No invoices</Typography>
