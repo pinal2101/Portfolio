@@ -11,7 +11,7 @@ const upload = multer({ dest: "public/uploads/" });
 export async function POST(req) {
   try {
     await connectMongoDB();
-
+    console.log('fgggfgf')
     const formData = await req.formData();
     const projectname = formData.get("projectname");
 

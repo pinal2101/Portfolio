@@ -1,0 +1,14 @@
+class demo
+{
+public static void man(string a[ ])
+{
+int i=10;
+floatf=10.5;
+doubled=10.55;
+char='A'
+boolean b='True'
+system.out.println ("The value of i="+i),
+system.out.println ("The value of f="+f),
+system.out.println ("The value of d="+d),
+}
+}

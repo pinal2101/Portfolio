@@ -2,14 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation"; 
+import { TextField, Button, Select, MenuItem, Typography, Container, Box, InputLabel, FormControl, OutlinedInput, Chip } from "@mui/material";
 
 export default function AddTopicPage() {
   const [formData, setFormData] = useState({
     projectname: "",
     websitelink: "",
-    technology: "React",
+    technology: [],
     description: "",
-    pagebuilder: "A",
+    pagebuilder: [],
     clientname: "",
     bidplatform: "",
     bidplatformURL: "",
@@ -20,7 +21,7 @@ export default function AddTopicPage() {
   });
 
   const [clientInvoices, setClientInvoices] = useState([]); // Store selected files
-
+  const [selectedFiles, setSelectedFiles] = useState([]); // Display selected file names
   const router = useRouter();
 
   // Handle input change
@@ -29,31 +30,45 @@ export default function AddTopicPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Handle multi-select change
+  const handleMultiSelectChange = (name) => (event) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: event.target.value,
+    }));
+  };
+
   // Handle file selection
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files); // Convert FileList to Array
     setClientInvoices(files);
+    setSelectedFiles(files.map((file) => file.name)); // Display selected file names
   };
 
   // Handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Create FormData object to send files
     const data = new FormData();
+
+    // Append form fields
     Object.entries(formData).forEach(([key, value]) => {
-      data.append(key, value);
+      if (Array.isArray(value)) {
+        value.forEach((item) => data.append(key, item));
+      } else {
+        data.append(key, value);
+      }
     });
 
-    // Append files to FormData
-    clientInvoices.forEach((file) => {
-      data.append("clientinvoices", file);
+    // Append multiple files correctly
+    clientInvoices.forEach((file, index) => {
+      data.append(`clientinvoices`, file); // Ensure the backend handles this correctly
     });
 
     try {
       const response = await fetch(`/api/topics`, {
         method: "POST",
-        body: data, // Send as FormData
+        body: data,
       });
 
       if (!response.ok) {
@@ -62,7 +77,7 @@ export default function AddTopicPage() {
       }
 
       alert("Topic added successfully!");
-      router.push("/"); // ✅ Redirect to home page
+      router.push("/");
 
     } catch (error) {
       console.error("Submit Error:", error);
@@ -71,121 +86,97 @@ export default function AddTopicPage() {
   };
 
   return (
-    <div className="container">
-      <h1>Add a New Topic</h1>
-      <form onSubmit={handleSubmit}>
-        <input type="text" name="projectname" value={formData.projectname} onChange={handleChange} placeholder="Project Name" required />
-        <input type="text" name="websitelink" value={formData.websitelink} onChange={handleChange} placeholder="Website Link" required />
+    <Container maxWidth="md">
+      <Box sx={{ backgroundColor: "#f9f9f9", p: 3, borderRadius: 2, boxShadow: 2, mt: 4 }}>
+        <Typography variant="h4" align="center" gutterBottom>
+          Add a New Topic
+        </Typography>
+        <form onSubmit={handleSubmit}>
 
-        <select name="technology" value={formData.technology} onChange={handleChange} required>
-          <option value="React">React</option>
-          <option value="Node">Node</option>
-          <option value="Angular">Angular</option>
-          <option value="Next.js">Next.js</option>
-        </select>
+          {/* Project Name */}
+          <TextField fullWidth label="Project Name" name="projectname" value={formData.projectname} onChange={handleChange} required margin="normal" />
 
-        <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Description" required />
+          {/* Website Link */}
+          <TextField fullWidth label="Website Link" name="websitelink" value={formData.websitelink} onChange={handleChange} required margin="normal" />
 
-        <select name="pagebuilder" value={formData.pagebuilder} onChange={handleChange} required>
-          <option value="A">A</option>
-          <option value="B">B</option>
-          <option value="C">C</option>
-        </select>
-
-        <input type="text" name="clientname" value={formData.clientname} onChange={handleChange} placeholder="Client Name" required />
-        
-        {/* File Upload Input */}
-        <input type="file" multiple onChange={handleFileChange} required />
-
-        {/* Display selected files */}
-        {clientInvoices.length > 0 && (
-          <div className="file-preview">
-            <h4>Selected Files:</h4>
-            <ul>
-              {clientInvoices.map((file, index) => (
-                <li key={index}>{file.name}</li>
+          {/* Technology Multi-select */}
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Technology</InputLabel>
+            <Select multiple value={formData.technology} onChange={handleMultiSelectChange("technology")} input={<OutlinedInput label="Technology" />} renderValue={(selected) => (
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                {selected.map((value) => (
+                  <Chip key={value} label={value} />
+                ))}
+              </Box>
+            )}>
+              {["React", "Node", "Angular", "Next.js"].map((tech) => (
+                <MenuItem key={tech} value={tech}>{tech}</MenuItem>
               ))}
-            </ul>
-          </div>
-        )}
+            </Select>
+          </FormControl>
 
-        <input type="text" name="bidplatform" value={formData.bidplatform} onChange={handleChange} placeholder="Bid Platform" required />
-        <input type="url" name="bidplatformURL" value={formData.bidplatformURL} onChange={handleChange} placeholder="Bid Platform URL" required />
-        <input type="number" name="invoiceamount" value={formData.invoiceamount} onChange={handleChange} placeholder="Invoice Amount" required />
+          {/* Description */}
+          <TextField fullWidth label="Description" name="description" value={formData.description} onChange={handleChange} required multiline rows={3} margin="normal" />
 
-        <input type="date" name="projectstartdate" value={formData.projectstartdate} onChange={handleChange} required />
-        <input type="date" name="completiondate" value={formData.completiondate} onChange={handleChange} required />
+          {/* Page Builder Multi-select */}
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Page Builder</InputLabel>
+            <Select multiple value={formData.pagebuilder} onChange={handleMultiSelectChange("pagebuilder")} input={<OutlinedInput label="Page Builder" />} renderValue={(selected) => (
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                {selected.map((value) => (
+                  <Chip key={value} label={value} />
+                ))}
+              </Box>
+            )}>
+              {["A", "B", "C"].map((builder) => (
+                <MenuItem key={builder} value={builder}>{builder}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
-        <textarea name="testimonials" value={formData.testimonials} onChange={handleChange} placeholder="Testimonials" />
+          {/* Client Name */}
+          <TextField fullWidth label="Client Name" name="clientname" value={formData.clientname} onChange={handleChange} required margin="normal" />
 
-        <button type="submit">Submit</button>
-      </form>
+          {/* File Upload */}
+          <input type="file" multiple onChange={handleFileChange} required />
 
-      {/* CSS Styles */}
-      <style jsx>{`
-        .container {
-          max-width: 500px;
-          margin: 0 auto;
-          padding: 20px;
-          background: #f9f9f9;
-          border-radius: 10px;
-          box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-          text-align: center;
-          color: #333;
-        }
-        form {
-          display: flex;
-          flex-direction: column;
-        }
-        input,
-        select,
-        textarea {
-          margin-bottom: 10px;
-          padding: 10px;
-          border: 1px solid #ccc;
-          border-radius: 5px;
-          font-size: 16px;
-        }
-        textarea {
-          resize: vertical;
-          height: 80px;
-        }
-        button {
-          padding: 12px;
-          background: #0070f3;
-          color: white;
-          border: none;
-          border-radius: 5px;
-          font-size: 18px;
-          cursor: pointer;
-          transition: 0.3s;
-        }
-        button:hover {
-          background: #005bb5;
-        }
-        .file-preview {
-          margin-top: 10px;
-          padding: 10px;
-          background: #eef2ff;
-          border-radius: 5px;
-        }
-        .file-preview h4 {
-          margin-bottom: 5px;
-        }
-        .file-preview ul {
-          list-style: none;
-          padding: 0;
-        }
-        .file-preview li {
-          background: #ffffff;
-          padding: 5px;
-          margin-bottom: 5px;
-          border-radius: 3px;
-          box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-        }
-      `}</style>
-    </div>
+          {/* Display selected files */}
+          {selectedFiles.length > 0 && (
+            <Box sx={{ mt: 2, p: 2, backgroundColor: "#eef2ff", borderRadius: 1 }}>
+              <Typography variant="h6">Selected Files:</Typography>
+              <ul>
+                {selectedFiles.map((file, index) => (
+                  <li key={index}>{file}</li>
+                ))}
+              </ul>
+            </Box>
+          )}
+
+          {/* Bid Platform */}
+          <TextField fullWidth label="Bid Platform" name="bidplatform" value={formData.bidplatform} onChange={handleChange} required margin="normal" />
+
+          {/* Bid Platform URL */}
+          <TextField fullWidth label="Bid Platform URL" name="bidplatformURL" type="url" value={formData.bidplatformURL} onChange={handleChange} required margin="normal" />
+
+          {/* Invoice Amount */}
+          <TextField fullWidth label="Invoice Amount" name="invoiceamount" type="number" value={formData.invoiceamount} onChange={handleChange} required margin="normal" />
+
+          {/* Project Start Date */}
+          <TextField fullWidth label="Project Start Date" name="projectstartdate" type="date" value={formData.projectstartdate} onChange={handleChange} required margin="normal" InputLabelProps={{ shrink: true }} />
+
+          {/* Completion Date */}
+          <TextField fullWidth label="Completion Date" name="completiondate" type="date" value={formData.completiondate} onChange={handleChange} required margin="normal" InputLabelProps={{ shrink: true }} />
+
+          {/* Testimonials */}
+          <TextField fullWidth label="Testimonials" name="testimonials" value={formData.testimonials} onChange={handleChange} multiline rows={2} margin="normal" />
+
+          {/* Submit Button */}
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3 }}>
+            Submit
+          </Button>
+
+        </form>
+      </Box>
+    </Container>
   );
-}
+}  
