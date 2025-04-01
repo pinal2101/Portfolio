@@ -4,216 +4,282 @@ import { useRouter } from "next/navigation";
 export default function EditTopicForm({ id, topic }) {
   const router = useRouter();
 
-  // ✅ Ensure data is initialized correctly
+  // Initialize form data state
   const [formData, setFormData] = useState({
-    projectname: topic?.topic?.projectname || "",
-    websitelink: topic?.topic?.websitelink || "",
-    technology: topic?.topic?.technology || "",
-    description: topic?.topic?.description || "",
-    pagebuilder: topic?.topic?.pagebuilder || "",
-    clientname: topic?.topic?.clientname || "",
-    clientinvoices: topic?.topic?.clientinvoices || [], // Initialize as an array
-    bidplatform: topic?.topic?.bidplatform || "",
-    bidplatformURL: topic?.topic?.bidplatformURL || "",
-    invoiceamount: topic?.topic?.invoiceamount || "",
-    projectstartdate: topic?.topic?.projectstartdate
-      ? new Date(topic.topic.projectstartdate).toISOString().split("T")[0]
-      : "",
-    completiondate: topic?.topic?.completiondate
-      ? new Date(topic.topic.completiondate).toISOString().split("T")[0]
-      : "",
-    testimonials: topic?.topic?.testimonials || "",
+    projectname: "",
+    websitelink: "",
+    technology: "",
+    description: "",
+    pagebuilder: "",
+    clientname: "",
+    clientinvoices: [],
+    bidplatform: "",
+    bidplatformURL: "",
+    invoiceamount: "",
+    projectstartdate: "",
+    completiondate: "",
+    testimonials: "",
   });
 
-  // ✅ Ensure state updates when topic changes
+  // Options for dropdowns
+  const technologies = ["React", "Angular", "Vue", "Node.js", "Django", "Other"];
+  const pagebuilders = ["A", "B", "C"];
+
+  // Update state when topic changes
   useEffect(() => {
-    setFormData({
-      projectname: topic?.topic?.projectname || "",
-      websitelink: topic?.topic?.websitelink || "",
-      technology: topic?.topic?.technology || "",
-      description: topic?.topic?.description || "",
-      pagebuilder: topic?.topic?.pagebuilder || "",
-      clientname: topic?.topic?.clientname || "",
-      clientinvoices: topic?.topic?.clientinvoices || [],
-      bidplatform: topic?.topic?.bidplatform || "",
-      bidplatformURL: topic?.topic?.bidplatformURL || "",
-      invoiceamount: topic?.topic?.invoiceamount || "",
-      projectstartdate: topic?.topic?.projectstartdate
-        ? new Date(topic.topic.projectstartdate).toISOString().split("T")[0]
-        : "",
-      completiondate: topic?.topic?.completiondate
-        ? new Date(topic.topic.completiondate).toISOString().split("T")[0]
-        : "",
-      testimonials: topic?.topic?.testimonials || "",
-    });
+    if (topic?.topic) {
+      setFormData({
+        projectname: topic.topic.projectname || "",
+        websitelink: topic.topic.websitelink || "",
+        technology: topic.topic.technology || "",
+        description: topic.topic.description || "",
+        pagebuilder: topic.topic.pagebuilder || "",
+        clientname: topic.topic.clientname || "",
+        clientinvoices: topic.topic.clientinvoices || [],
+        bidplatform: topic.topic.bidplatform || "",
+        bidplatformURL: topic.topic.bidplatformURL || "",
+        invoiceamount: topic.topic.invoiceamount || "",
+        projectstartdate: topic.topic.projectstartdate
+          ? new Date(topic.topic.projectstartdate).toISOString().split("T")[0]
+          : "",
+        completiondate: topic.topic.completiondate
+          ? new Date(topic.topic.completiondate).toISOString().split("T")[0]
+          : "",
+        testimonials: topic.topic.testimonials || "",
+      });
+    }
   }, [topic]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-    // Ensure that clientinvoices is handled as an array of strings
-    if (name === "clientinvoices") {
-      // Split clientinvoices value into an array if it's a string
-      const invoicePaths = value.split(',').map((path) => path.trim()); // Split and clean up file paths
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
 
-      setFormData({
-        ...formData,
-        [name]: invoicePaths, // Store clientinvoices as an array of file paths
-      });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    // Ensure only file objects are added
+    const validFiles = files.filter((file) => file instanceof Blob);
 
-    console.log("Updated Form Data:", { ...formData, [name]: value });
+    setFormData((prev) => ({
+      ...prev,
+      clientinvoices: [...prev.clientinvoices, ...validFiles], // Save valid file objects
+    }));
+  };
+
+  const handleFileRemove = (index) => {
+    const newFiles = formData.clientinvoices.filter((_, i) => i !== index);
+    setFormData((prev) => ({
+      ...prev,
+      clientinvoices: newFiles,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Ensure clientinvoices is an array of strings when submitting
-    const updatedFormData = {
-      ...formData,
-      clientinvoices: formData.clientinvoices, // Already an array of file paths
-    };
-
-    console.log("Form Data being sent:", updatedFormData);
-
     try {
+      const formToSubmit = { ...formData };
+      // Convert file objects to base64 strings if necessary for API
+      formToSubmit.clientinvoices = await Promise.all(
+        formData.clientinvoices.map(async (file) => {
+          if (file instanceof Blob) {
+            const base64 = await convertFileToBase64(file);
+            return base64;
+          }
+          return file; // If the file is not a Blob, leave it unchanged
+        })
+      );
+
       const res = await fetch(`/api/topics/${id}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedFormData),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formToSubmit),
       });
-
-      if (!res.ok) {
-        throw new Error("Failed to update topic");
-      }
-
-      const data = await res.json();
-      console.log("API Response:", data);
-
-      // Redirect after successful update
-      router.push("/"); 
+      if (!res.ok) throw new Error("Failed to update topic");
+      router.push("/");
     } catch (error) {
       console.error("Update failed:", error);
     }
   };
 
+  // Utility function to convert file to base64 string (if needed)
+  const convertFileToBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
   return (
-    <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold text-gray-700 mb-6 text-center">Edit Project</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <input
-            name="projectname"
-            value={formData.projectname}
-            onChange={handleChange}
-            placeholder="Project Name"
-            className="input-field"
-          />
-          <input
-            name="websitelink"
-            value={formData.websitelink}
-            onChange={handleChange}
-            placeholder="Website Link"
-            className="input-field"
-          />
-        </div>
+    <div className="form-container">
+      <h2 className="form-title">Edit Project</h2>
+      <form onSubmit={handleSubmit} className="form">
+        <label>Project Name:
+          <input name="projectname" value={formData.projectname} onChange={handleChange} className="input-field" />
+        </label>
+        
+        <label>Website Link:
+          <input name="websitelink" value={formData.websitelink} onChange={handleChange} className="input-field" />
+        </label>
+        
+        <label>Technology:
+          <select name="technology" value={formData.technology} onChange={handleChange} className="input-field">
+            {technologies.map((tech, index) => (
+              <option key={index} value={tech}>{tech}</option>
+            ))}
+          </select>
+        </label>
+        
+        <label>Description:
+          <textarea name="description" value={formData.description} onChange={handleChange} className="input-field" />
+        </label>
+        
+        <label>Page Builder:
+          <select name="pagebuilder" value={formData.pagebuilder} onChange={handleChange} className="input-field">
+            {pagebuilders.map((builder, index) => (
+              <option key={index} value={builder}>{builder}</option>
+            ))}
+          </select>
+        </label>
+        
+        <label>Client Name:
+          <input name="clientname" value={formData.clientname} onChange={handleChange} className="input-field" />
+        </label>
 
-        <input
-          name="technology"
-          value={formData.technology}
-          onChange={handleChange}
-          placeholder="Technology"
-          className="input-field"
-        />
-        <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          placeholder="Description"
-          className="input-field"
-        />
+        {/* Display existing invoices and allow file uploads */}
+        <label>Client Invoices:
+          <div className="invoice-list">
+            {formData.clientinvoices.map((file, index) => (
+              <div key={index} className="invoice-item">
+                <span>{file.name || file}</span>
+                <button type="button" onClick={() => handleFileRemove(index)} className="remove-btn">
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
+          <input type="file" multiple onChange={handleFileChange} className="input-field" />
+        </label>
 
-        <div className="grid grid-cols-2 gap-4">
-          <input
-            name="pagebuilder"
-            value={formData.pagebuilder}
-            onChange={handleChange}
-            placeholder="Page Builder"
-            className="input-field"
-          />
-          <input
-            name="clientname"
-            value={formData.clientname}
-            onChange={handleChange}
-            placeholder="Client Name"
-            className="input-field"
-          />
-        </div>
-
-        <textarea
-          name="clientinvoices"
-          value={formData.clientinvoices.join(",")} // Join array as a comma-separated string for input field
-          onChange={handleChange}
-          placeholder="Client Invoices (comma-separated file paths)"
-          className="input-field"
-        />
-        <input
-          name="bidplatform"
-          value={formData.bidplatform}
-          onChange={handleChange}
-          placeholder="Bid Platform"
-          className="input-field"
-        />
-        <input
-          name="bidplatformURL"
-          value={formData.bidplatformURL}
-          onChange={handleChange}
-          placeholder="Bid Platform URL"
-          className="input-field"
-        />
-
-        <input
-          name="invoiceamount"
-          type="number"
-          value={formData.invoiceamount}
-          onChange={handleChange}
-          placeholder="Invoice Amount"
-          className="input-field"
-        />
-
-        <div className="grid grid-cols-2 gap-4">
-          <input
-            name="projectstartdate"
-            type="date"
-            value={formData.projectstartdate}
-            onChange={handleChange}
-            className="input-field"
-          />
-          <input
-            name="completiondate"
-            type="date"
-            value={formData.completiondate}
-            onChange={handleChange}
-            className="input-field"
-          />
-        </div>
-
-        <textarea
-          name="testimonials"
-          value={formData.testimonials}
-          onChange={handleChange}
-          placeholder="Testimonials"
-          className="input-field"
-        />
-
-        <button type="submit" className="btn-primary">
-          Update Topic
-        </button>
+        <label>Bid Platform:
+          <input name="bidplatform" value={formData.bidplatform} onChange={handleChange} className="input-field" />
+        </label>
+        
+        <label>Bid Platform URL:
+          <input name="bidplatformURL" value={formData.bidplatformURL} onChange={handleChange} className="input-field" />
+        </label>
+        
+        <label>Invoice Amount:
+          <input name="invoiceamount" type="number" value={formData.invoiceamount} onChange={handleChange} className="input-field" />
+        </label>
+        
+        <label>Project Start Date:
+          <input name="projectstartdate" type="date" value={formData.projectstartdate} onChange={handleChange} className="input-field" />
+        </label>
+        
+        <label>Completion Date:
+          <input name="completiondate" type="date" value={formData.completiondate} onChange={handleChange} className="input-field" />
+        </label>
+        
+        <label>Testimonials:
+          <textarea name="testimonials" value={formData.testimonials} onChange={handleChange} className="input-field" />
+        </label>
+        
+        <button type="submit" className="submit-btn">Update Project</button>
       </form>
+
+      {/* CSS */}
+      <style jsx>{`
+        .form-container {
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 30px;
+          background-color: #fff;
+          border-radius: 8px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-title {
+          text-align: center;
+          font-size: 24px;
+          font-weight: bold;
+          margin-bottom: 20px;
+        }
+
+        .form {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        label {
+          font-size: 16px;
+          font-weight: 600;
+        }
+
+        .input-field {
+          padding: 10px;
+          font-size: 14px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          margin-top: 5px;
+        }
+
+        .input-field:focus {
+          border-color: #5c6ac4;
+          outline: none;
+        }
+
+        textarea {
+          padding: 10px;
+          font-size: 14px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          resize: vertical;
+          min-height: 100px;
+        }
+
+        .submit-btn {
+          padding: 12px 20px;
+          background-color: #4CAF50;
+          color: white;
+          font-size: 16px;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+          background-color: #45a049;
+        }
+
+        .invoice-list {
+          margin: 10px 0;
+        }
+
+        .invoice-item {
+          color: #0066cc;
+          font-size: 14px;
+          margin-bottom: 5px;
+        }
+
+        .remove-btn {
+          background-color: #ff0000;
+          color: white;
+          border: none;
+          cursor: pointer;
+          padding: 5px;
+          font-size: 12px;
+          margin-left: 10px;
+          border-radius: 4px;
+        }
+
+        .remove-btn:hover {
+          background-color: #cc0000;
+        }
+      `}</style>
     </div>
   );
 }

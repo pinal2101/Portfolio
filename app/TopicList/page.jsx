@@ -136,6 +136,19 @@ const TopicList = () => {
                   </TableCell>
                   <TableCell>{t.pagebuilder}</TableCell>                 
                   <TableCell>{t.clientname}</TableCell>
+                  <TableCell>
+                     {Array.isArray(t.clientinvoices) && t.clientinvoices.length > 0 ? (
+                       t.clientinvoices.map((file, index) => (
+                         file &&  (
+                           <a key={index} href={file} target="_blank" rel="noopener noreferrer">
+                             <img src={file} alt={`Invoice ${index + 1}`} style={{ width: 40, height: 40, marginRight: 4, borderRadius: 4 }} />
+                           </a>
+                         ) 
+                       ))
+                     ) : (   
+                       <Typography variant="body2" color="textSecondary">No invoices</Typography>
+                     )}
+                   </TableCell>
                   <TableCell>{t.bidplatform}</TableCell>
                   <TableCell>
                     <a href={t.bidplatformURL} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
@@ -169,4 +182,6 @@ const TopicList = () => {
 };
 
 export default TopicList;
+
+
 

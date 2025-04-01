@@ -63,6 +63,8 @@ export default function AddTopicPage() {
     // Append multiple files correctly
     clientInvoices.forEach((file, index) => {
       data.append(`clientinvoices`, file); // Ensure the backend handles this correctly
+    console.log('file',file);
+    
     });
 
     try {
