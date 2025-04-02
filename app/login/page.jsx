@@ -44,7 +44,7 @@ const Login = () => {
         localStorage.setItem("token", response.data.token);
 
         setLoggedIn(true); // Update state
-        router.replace("/topiclist"); // Redirect immediately after successful login
+        router.replace("/TopicList"); // Redirect immediately after successful login
       }
     } catch (error) {
       console.error("Login error:", error);
