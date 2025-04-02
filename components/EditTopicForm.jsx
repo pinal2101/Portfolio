@@ -95,8 +95,10 @@ export default function EditTopicForm({ id, topic }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formToSubmit),
       });
+      router.push("/TopicList");
       if (!res.ok) throw new Error("Failed to update topic");
-      router.push("/");
+      // router.push("/TopicList");
+
     } catch (error) {
       console.error("Update failed:", error);
     }
@@ -118,11 +120,11 @@ export default function EditTopicForm({ id, topic }) {
         <label>Project Name:
           <input name="projectname" value={formData.projectname} onChange={handleChange} className="input-field" />
         </label>
-        
+
         <label>Website Link:
           <input name="websitelink" value={formData.websitelink} onChange={handleChange} className="input-field" />
         </label>
-        
+
         <label>Technology:
           <select name="technology" value={formData.technology} onChange={handleChange} className="input-field">
             {technologies.map((tech, index) => (
@@ -130,11 +132,11 @@ export default function EditTopicForm({ id, topic }) {
             ))}
           </select>
         </label>
-        
+
         <label>Description:
           <textarea name="description" value={formData.description} onChange={handleChange} className="input-field" />
         </label>
-        
+
         <label>Page Builder:
           <select name="pagebuilder" value={formData.pagebuilder} onChange={handleChange} className="input-field">
             {pagebuilders.map((builder, index) => (
@@ -142,7 +144,7 @@ export default function EditTopicForm({ id, topic }) {
             ))}
           </select>
         </label>
-        
+
         <label>Client Name:
           <input name="clientname" value={formData.clientname} onChange={handleChange} className="input-field" />
         </label>
@@ -165,27 +167,27 @@ export default function EditTopicForm({ id, topic }) {
         <label>Bid Platform:
           <input name="bidplatform" value={formData.bidplatform} onChange={handleChange} className="input-field" />
         </label>
-        
+
         <label>Bid Platform URL:
           <input name="bidplatformURL" value={formData.bidplatformURL} onChange={handleChange} className="input-field" />
         </label>
-        
+
         <label>Invoice Amount:
           <input name="invoiceamount" type="number" value={formData.invoiceamount} onChange={handleChange} className="input-field" />
         </label>
-        
+
         <label>Project Start Date:
           <input name="projectstartdate" type="date" value={formData.projectstartdate} onChange={handleChange} className="input-field" />
         </label>
-        
+
         <label>Completion Date:
           <input name="completiondate" type="date" value={formData.completiondate} onChange={handleChange} className="input-field" />
         </label>
-        
+
         <label>Testimonials:
           <textarea name="testimonials" value={formData.testimonials} onChange={handleChange} className="input-field" />
         </label>
-        
+
         <button type="submit" className="submit-btn">Update Project</button>
       </form>
 

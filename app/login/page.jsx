@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Input from "../../components/input";
 import axios from "axios";
@@ -9,8 +9,17 @@ const defaultData = { username: "", password: "" };
 
 const Login = () => {
   const [data, setData] = useState(defaultData);
-  const [loading, setLoading] = useState(false); // Track loading state for submit button
+  const [loading, setLoading] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false); // Track login state
   const router = useRouter();
+
+  // useEffect(() => {
+  //   // Redirect if already logged in
+  //   const token = localStorage.getItem("token");
+  //   if (token) {
+  //     router.replace("/TopicList");
+  //   }
+  // }, []);
 
   const onValueChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -23,55 +32,61 @@ const Login = () => {
       return;
     }
 
-    // Set loading to true while making the API call
     setLoading(true);
 
-    // API CALL
     try {
-      const response = await axios.post("/api/users/login", data);
-      setData(defaultData);
+      const response = await axios.post("/api/users/login", data, {
+        withCredentials: true, // Ensure cookies are sent
+      });
 
-      // Check for a successful login response
-      if (response.status === 200) {
-        // Redirect to TopicList page on successful login
-        router.push("/TopicList");
-      } else {
-        alert("Login failed. Please try again.");
+      if (response.status === 200 && response.data.success) {
+        // Store token/session
+        localStorage.setItem("token", response.data.token);
+
+        setLoggedIn(true); // Update state
+        router.replace("/topiclist"); // Redirect immediately after successful login
       }
     } catch (error) {
-      console.log(error);
-      alert("An error occurred. Please try again.");
+      console.error("Login error:", error);
+      alert("Invalid credentials, please try again.");
     } finally {
-      // Reset loading state
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    if (loggedIn) {
+      router.replace("/TopicList"); // Redirect after successful login
+    }
+  }, [loggedIn]);
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center items-center">
-      <div className="bg-white px-16 pt-8 pb-12 mb-4">
+      <div className="bg-white px-16 pt-8 pb-12 mb-4 shadow-md rounded-lg">
         <h1 className="text-3xl mb-4 text-center">Login</h1>
         <form>
           <Input
             label="Username"
             id="username"
             type="text"
+            name="username"
             value={data.username}
-            onChange={(e) => onValueChange(e)}
+            onChange={onValueChange}
           />
 
           <Input
             label="Password"
             id="password"
             type="password"
+            name="password"
             value={data.password}
-            onChange={(e) => onValueChange(e)}
+            onChange={onValueChange}
           />
 
           <button
-            className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full w-full"
-            onClick={(e) => onLogin(e)}
-            disabled={loading} // Disable button while loading
+            className={`bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full w-full ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+            onClick={onLogin}
+            disabled={loading}
           >
             {loading ? "Logging In..." : "Submit"}
           </button>

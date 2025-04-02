@@ -41,8 +41,9 @@ export default function AddTopicPage() {
   // Handle file selection
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files); // Convert FileList to Array
-    setClientInvoices(files);
-    setSelectedFiles(files.map((file) => file.name)); // Display selected file names
+    
+    setClientInvoices((prev) => [...prev, ...files]); // Append new files
+  setSelectedFiles((prev) => [...prev, ...files.map((file) => file.name)]);
   };
 
   // Handle form submit
@@ -51,7 +52,7 @@ export default function AddTopicPage() {
 
     const data = new FormData();
 
-    // Append form fields
+    
     Object.entries(formData).forEach(([key, value]) => {
       if (Array.isArray(value)) {
         value.forEach((item) => data.append(key, item));
@@ -61,7 +62,7 @@ export default function AddTopicPage() {
     });
 
     // Append multiple files correctly
-    clientInvoices.forEach((file, index) => {
+    clientInvoices.forEach((file) => {
       data.append(`clientinvoices`, file); // Ensure the backend handles this correctly
     console.log('file',file);
     
@@ -79,7 +80,7 @@ export default function AddTopicPage() {
       }
 
       alert("Topic added successfully!");
-      router.push("/");
+      router.push("/TopicList");
 
     } catch (error) {
       console.error("Submit Error:", error);
@@ -140,7 +141,8 @@ export default function AddTopicPage() {
           <TextField fullWidth label="Client Name" name="clientname" value={formData.clientname} onChange={handleChange} required margin="normal" />
 
           {/* File Upload */}
-          <input type="file" multiple onChange={handleFileChange} required />
+          {/* <input type="file" multiple onChange={handleFileChange} required /> */}
+          <input type="file" multiple onChange={handleFileChange} className="input-field" />
 
           {/* Display selected files */}
           {selectedFiles.length > 0 && (

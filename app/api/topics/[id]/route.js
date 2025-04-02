@@ -2,14 +2,14 @@ import Topic from "../../../editTopic/[id]/libs/models/topic";
 import connectMongoDB from "../../../editTopic/[id]/libs/mongodb";
 import { NextResponse } from "next/server";
 
-// ✅ Handle PUT request (Update topic)
+//  Handle PUT request (Update topic)
 export async function PUT(request, { params } ) {
   
     try {
         await connectMongoDB();
         //const  { id } = params;
-        const { id } = params; // ✅ Extract `id` correctly
-        // ✅ Parse request body
+        const { id } = params; //  Extract `id` correctly
+        //  Parse request body
         const {
             projectname: projectname,
             websitelink: websitelink,
@@ -24,9 +24,9 @@ export async function PUT(request, { params } ) {
             projectstartdate: projectstartdate,
             completiondate: completiondate,
             testimonials: testimonials
-        } = await request.json();  // ✅ Fix: await request.json()
+        } = await request.json();  //  Fix: await request.json()
 
-        // ✅ Update the topic in the database
+        //  Update the topic in the database
         const updatedTopic = await Topic.findByIdAndUpdate(
             id, 
             { projectname, websitelink, technology, description, pagebuilder, clientname, 
@@ -49,11 +49,11 @@ export async function PUT(request, { params } ) {
     }
 }
 
-// ✅ Handle GET request (Fetch topic)
+// Handle GET request (Fetch topic)
 export async function GET(request, { params }) {
   try {
     await connectMongoDB();
-    const { id } = params; // ✅ Extract `id` correctly
+    const { id } = params; //  Extract `id` correctly
 
     const topic = await Topic.findById(id);
     
