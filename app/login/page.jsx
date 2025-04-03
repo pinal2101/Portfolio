@@ -47,9 +47,10 @@ const Login = () => {
         router.replace("/TopicList"); // Redirect immediately after successful login
       }
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Login error:", error.response?.data || error.message);
       alert("Invalid credentials, please try again.");
-    } finally {
+    }
+     finally {
       setLoading(false);
     }
   };
