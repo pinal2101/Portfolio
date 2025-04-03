@@ -46,67 +46,68 @@
 //         return new Response("Something went wrong", { status: 500 });
 //     }
 // };
-
-
 import User from "../../../editTopic/[id]/libs/models/user";
 import bcryptjs from 'bcryptjs';
 import connectMongoDB from "../../../editTopic/[id]/libs/mongodb";
 import jwt from 'jsonwebtoken';
 import { NextResponse } from "next/server";
 
-// Connect to MongoDB
-connectMongoDB();
-
 export const POST = async (req) => {
     try {
+        await connectMongoDB(); // Ensure DB connection inside the function
+
+        // Set CORS headers
+        const headers = new Headers();
+        headers.set("Access-Control-Allow-Origin", "*");
+        headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+        headers.set("Access-Control-Allow-Headers", "Content-Type");
+
+        // Handle CORS preflight request
+        if (req.method === "OPTIONS") {
+            return new NextResponse(null, { status: 204, headers });
+        }
+
         const body = await req.json();
         const { username, password } = body;
         console.log('Received:', username, password);
 
-        // Check if username and password are provided
         if (!username || !password) {
             console.log('Username or password missing');
-            return new Response("Username and password are required", { status: 401 });
+            return new NextResponse("Username and password are required", { status: 401, headers });
         }
 
-        // Fetch user from DB
         const user = await User.findOne({ username });
         if (!user) {
             console.log('User not found');
-            return new Response("Username does not exist", { status: 400 });
+            return new NextResponse("Username does not exist", { status: 400, headers });
         }
 
-        // Validate password
         const validPassword = await bcryptjs.compare(password, user.password);
         if (!validPassword) {
             console.log('Incorrect password for user:', username);
-            return new Response("Incorrect Password", { status: 400 });
+            return new NextResponse("Incorrect Password", { status: 400, headers });
         }
 
-        // Create JWT Token
-        const tokenData = {
-            username: user.username,
-            id: user._id
-        };
+        const tokenData = { username: user.username, id: user._id };
 
-        // Verify secret key is available
-        console.log('JWT Secret:', process.env.JWT_SECRETKEY);
         if (!process.env.JWT_SECRETKEY) {
-            return new Response('JWT secret key missing', { status: 500 });
+            return new NextResponse("JWT secret key missing", { status: 500, headers });
         }
 
         const token = jwt.sign(tokenData, process.env.JWT_SECRETKEY, { expiresIn: '1d' });
 
-        // Create response with token
-        const response = NextResponse.json({ success: true, message: "Login successful", token });
+        // Response with token and cookie
+        const response = new NextResponse(JSON.stringify({ success: true, message: "Login successful", token }), {
+            status: 200,
+            headers: headers
+        });
 
-        // Set token in HTTP-only cookie
-        response.cookies.set('token', token);
+        // Set token in cookie
+        response.headers.set("Set-Cookie", `token=${token}; HttpOnly; Path=/; Secure; SameSite=Strict`);
 
         return response;
-        
     } catch (error) {
         console.error("Login Error:", error);
-        return new Response("Something went wrong", { status: 500 });
+        return new NextResponse("Something went wrong", { status: 500 });
     }
 };

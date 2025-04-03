@@ -32,7 +32,7 @@ export async function POST(req) {
 
     // Store data in MongoDB
     const topic = await Topic.create({
-      projectname,
+      projectname:formData.get("projectname"),
       websitelink: formData.get("websitelink"),
       technology: formData.get("technology"),
       description: formData.get("description"),
