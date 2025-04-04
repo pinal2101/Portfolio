@@ -8,7 +8,7 @@ const TopicSchema = new mongoose.Schema({
   description: String,
   pagebuilder: String,
   clientname: String,
-  clientinvoices: [String], // Store file paths
+  //clientinvoices: [String], // Store file paths
   bidplatform: String,
   bidplatformURL: String,
   invoiceamount: Number,
