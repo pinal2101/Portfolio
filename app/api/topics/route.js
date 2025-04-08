@@ -115,6 +115,7 @@ import cloudinary from "../../editTopic/[id]/libs/cloudinary";
 async function uploadToCloudinary(file) {
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
+
   const result = await new Promise((resolve, reject) => {
     cloudinary.uploader.upload_stream({ folder: "client_invoices" }, (error, result) => {
       if (error) return reject(error);
