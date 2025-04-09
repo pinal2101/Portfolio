@@ -112,7 +112,7 @@ export default function AddTopicPage() {
                 ))}
               </Box>
             )}>
-              {["React", "Node", "Angular", "Next.js"].map((tech) => (
+              {["React", "Next.js","Wix","Squarespace","Webflow","HubSpot CMS","Shopify","WooCommerce","BigCommerce","Magento","WordPress","Vue.js","Node.js","Express.js","Laravel (PHP)"].map((tech) => (
                 <MenuItem key={tech} value={tech}>{tech}</MenuItem>
               ))}
             </Select>
@@ -131,7 +131,7 @@ export default function AddTopicPage() {
                 ))}
               </Box>
             )}>
-              {["A", "B", "C"].map((builder) => (
+              {["Elementor","Beaver Builder","WPBakery Page Builder","Divi Builder","Gutenberg","Oxygen Builder"].map((builder) => (
                 <MenuItem key={builder} value={builder}>{builder}</MenuItem>
               ))}
             </Select>

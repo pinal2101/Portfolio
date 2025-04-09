@@ -22,8 +22,8 @@ export default function EditTopicForm({ id, topic }) {
   });
 
   // Options for dropdowns
-  const technologies = ["React", "Angular", "Vue", "Node.js", "Django", "Other"];
-  const pagebuilders = ["A", "B", "C"];
+  const technologies = ["React", "Next.js","Wix","Squarespace","Webflow","HubSpot CMS","Shopify","WooCommerce","BigCommerce","Magento","WordPress","Vue.js","Node.js","Express.js","Laravel (PHP)"];
+  const pagebuilders = ["Elementor","Beaver Builder","WPBakery Page Builder","Divi Builder","Gutenberg","Oxygen Builder"];
 
   // Update state when topic changes
   useEffect(() => {
