@@ -57,7 +57,9 @@ const TopicList = () => {
   };
 
   const filteredTopics = topics.filter((topic) =>
-    (topic.technology?.toLowerCase() || "").includes(searchTechnology.toLowerCase())
+    topic.technology?.some((tech) =>
+      tech.toLowerCase().includes(searchTechnology.toLowerCase())
+    )
   );
 
   if (!hydrated) return null;
@@ -83,9 +85,10 @@ const TopicList = () => {
             )
           }}
         />
-        <Button variant="contained" color="secondary" startIcon={<LogoutIcon />} onClick={onLogout}>
-          Logout
-        </Button>
+        <Button variant="contained" color="primary" startIcon={<LogoutIcon />} onClick={onLogout}>
+  Logout
+</Button>
+
       </Box>
 
       {filteredTopics.length === 0 ? (
@@ -132,34 +135,6 @@ const TopicList = () => {
       {/* Dialog for viewing full details */}
       <Dialog open={!!selectedTopic} onClose={() => setSelectedTopic(null)} maxWidth="md" fullWidth>
         <DialogTitle>Project Details</DialogTitle>
-        {/* <DialogContent dividers>
-          {selectedTopic && (
-            <>
-              <DialogContentText><strong>Website Link:</strong> <a href={selectedTopic.websitelink} target="_blank" rel="noopener noreferrer">{selectedTopic.websitelink}</a></DialogContentText>
-              <DialogContentText><strong>Technology:</strong> {selectedTopic.technology}</DialogContentText>
-              <DialogContentText><strong>Description:</strong> {selectedTopic.description}</DialogContentText>
-              <DialogContentText><strong>Page Builder:</strong> {selectedTopic.pagebuilder}</DialogContentText>
-              <DialogContentText><strong>Client Name:</strong> {selectedTopic.clientname}</DialogContentText>
-              <DialogContentText><strong>Client Invoices:</strong>
-                <Box display="flex" flexWrap="wrap" gap={1} mt={1}>
-                  {Array.isArray(selectedTopic.clientinvoices) && selectedTopic.clientinvoices.map((file, i) => (
-                    file && (
-                      <a key={i} href={file} target="_blank" rel="noopener noreferrer">
-                        <img src={file} alt={`Invoice ${i + 1}`} style={{ width: 60, height: 60, borderRadius: 4 }} />
-                      </a>
-                    )
-                  ))}
-                </Box>
-              </DialogContentText>
-              <DialogContentText><strong>Bid Platform:</strong> {selectedTopic.bidplatform}</DialogContentText>
-              <DialogContentText><strong>Bid Platform URL:</strong> <a href={selectedTopic.bidplatformURL} target="_blank" rel="noopener noreferrer">{selectedTopic.bidplatformURL}</a></DialogContentText>
-              <DialogContentText><strong>Invoice Amount:</strong> ₹{selectedTopic.invoiceamount}</DialogContentText>
-              <DialogContentText><strong>Start Date:</strong> {selectedTopic.projectstartdate}</DialogContentText>
-              <DialogContentText><strong>Completion Date:</strong> {selectedTopic.completiondate}</DialogContentText>
-              <DialogContentText><strong>Testimonials:</strong> {selectedTopic.testimonials}</DialogContentText>
-            </>
-          )}
-        </DialogContent> */}
 
 <DialogContent dividers>
   {selectedTopic && (

@@ -1,14 +1,13 @@
 import mongoose from "mongoose";
-//import bcrypt from "bcrypt";
-const TopicSchema = new mongoose.Schema({
-  
+
+const topicSchema = new mongoose.Schema({
   projectname: String,
   websitelink: String,
-  technology: String,
+  technology: [String], // ✅ Fix: make this an array
   description: String,
-  pagebuilder: String,
+  pagebuilder: [String], // ✅ Also array
   clientname: String,
-  clientinvoices: [String], // Store file paths
+  clientinvoices: [String], // ✅ Array of invoice URLs
   bidplatform: String,
   bidplatformURL: String,
   invoiceamount: Number,
@@ -17,6 +16,6 @@ const TopicSchema = new mongoose.Schema({
   testimonials: String,
 });
 
-const Topic = mongoose.models.Topic || mongoose.model("Topic", TopicSchema);
-export default Topic;
+const Topic = mongoose.models.Topic || mongoose.model("Topic", topicSchema);
 
+export default Topic;

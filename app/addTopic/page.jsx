@@ -90,10 +90,15 @@ export default function AddTopicPage() {
 
   return (
     <Container maxWidth="md">
-      <Box sx={{ backgroundColor: "#f9f9f9", p: 3, borderRadius: 2, boxShadow: 2, mt: 4 }}>
-        <Typography variant="h4" align="center" gutterBottom>
-          Add a New Topic
-        </Typography>
+     <Box sx={{ backgroundColor: "#f9f9f9", p: 3, borderRadius: 2, boxShadow: 2, mt: 4 }}>
+  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+    <Typography variant="h4">Add a New Topic</Typography>
+    <Button variant="outlined" onClick={() => router.push("/TopicList")}>
+      Back
+    </Button>
+  </Box>
+
+
         <form onSubmit={handleSubmit}>
 
           {/* Project Name */}
