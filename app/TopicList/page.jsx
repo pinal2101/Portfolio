@@ -146,19 +146,20 @@ const TopicList = () => {
         <Typography><strong>Page Builder:</strong> {selectedTopic.pagebuilder}</Typography>
         <Typography><strong>Client Name:</strong> {selectedTopic.clientname}</Typography>
       </Box>
+{selectedTopic?.clientinvoices?.map((file, i) => {
+  const fileName = decodeURIComponent(file.split('/').pop()); // extract just the file name
 
-      <Box mt={2}>
-        <Typography variant="body1" fontWeight="bold">Client Invoices:</Typography>
-        <Box display="flex" flexWrap="wrap" gap={1} mt={1}>
-          {Array.isArray(selectedTopic.clientinvoices) && selectedTopic.clientinvoices.map((file, i) => (
-            file && (
-              <a key={i} href={file} target="_blank" rel="noopener noreferrer">
-                <img src={file} alt={`Invoice ${i + 1}`} style={{ width: 60, height: 60, borderRadius: 4 }} />
-              </a>
-            )
-          ))}
-        </Box>
-      </Box>
+  return (
+    <Box key={i} sx={{ textAlign: 'left', m: 1 }}>
+      <a href={file} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: '#1976d2' }}>
+        {fileName}
+      </a>
+    </Box>
+  );
+})}
+
+
+
 
       <Box mt={2}>
         <Typography><strong>Bid Platform:</strong> {selectedTopic.bidplatform}</Typography>
