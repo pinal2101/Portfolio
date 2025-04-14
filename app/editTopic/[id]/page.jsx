@@ -36,7 +36,8 @@ export default function EditTopic() {
     const fetchData = async () => {
       if (id) {
         const data = await getTopicById(id);
-
+  console.log('data',data);
+  
         if (!data) {
           setError("Failed to load topic data");
           return; // Skip setting state if data is null

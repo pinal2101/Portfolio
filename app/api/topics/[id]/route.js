@@ -17,10 +17,14 @@ import { NextResponse } from "next/server";
  }
  
  // ✅ PUT - Update topic
- export async function PUT(request, { params }) {
+ export async function PUT(request, context ) {
+  //  const { params } = context;
+  //    const { id } = params;
+  const { id } = context.params;
    try {
      await connectMongoDB();
-     const { id } = params;
+    //  const { params } = context;
+    //  const { id } = params;
  
      const {
        projectname,
@@ -70,10 +74,12 @@ import { NextResponse } from "next/server";
  }
  
  // ✅ GET - Fetch topic by ID
- export async function GET(request, { params }) {
+ export async function GET (request, context ) {
+  // const { params } = context;
+  //    const { id } = params;
+  const { id } = context.params;
    try {
      await connectMongoDB();
-     const { id } = params;
  
      const topic = await Topic.findById(id);
  
