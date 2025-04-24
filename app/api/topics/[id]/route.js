@@ -16,7 +16,7 @@ import { NextResponse } from "next/server";
    });
  }
  
- // ✅ PUT - Update topic
+ //  PUT - Update topic
  export async function PUT(request, context ) {
   //  const { params } = context;
   //    const { id } = params;
@@ -73,7 +73,7 @@ import { NextResponse } from "next/server";
    }
  }
  
- // ✅ GET - Fetch topic by ID
+ //  GET - Fetch topic by ID
  export async function GET (request, context ) {
   // const { params } = context;
   //    const { id } = params;
@@ -93,3 +93,22 @@ import { NextResponse } from "next/server";
      return NextResponse.json({ error: "Failed to fetch topic", details: error.message }, { status: 500 });
    }
  }
+
+ //  DELETE - Delete topic by ID
+export async function DELETE(request, { params }) {
+  const { id } = params;
+  try {
+    await connectMongoDB();
+
+    const deletedTopic = await Topic.findByIdAndDelete(id);
+
+    if (!deletedTopic) {
+      return NextResponse.json({ error: "Topic not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: "Topic deleted" }, { status: 200 });
+  } catch (error) {
+    console.error("Delete error:", error);
+    return NextResponse.json({ error: "Failed to delete topic", details: error.message }, { status: 500 });
+  }
+}

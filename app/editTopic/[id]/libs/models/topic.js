@@ -3,11 +3,11 @@ import mongoose from "mongoose";
 const topicSchema = new mongoose.Schema({
   projectname: String,
   websitelink: String,
-  technology: [String], // ✅ Fix: make this an array
+  technology: [String], //  Fix: make this an array
   description: String,
-  pagebuilder: [String], // ✅ Also array
+  pagebuilder: [String], //  Also array
   clientname: String,
-  clientinvoices: [String], // ✅ Array of invoice URLs
+  clientinvoices: [String], //  Array of invoice URLs
   bidplatform: String,
   bidplatformURL: String,
   invoiceamount: Number,

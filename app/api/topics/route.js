@@ -18,7 +18,7 @@ import { NextResponse } from "next/server";
    return result.secure_url;
  }
  
- // ✅ POST - Create Topic with Cloudinary uploads
+ //  POST - Create Topic with Cloudinary uploads
  export async function POST(req) {
    try {
      await connectMongoDB();
@@ -64,7 +64,7 @@ import { NextResponse } from "next/server";
    }
  }
  
- // ✅ GET - Get all topics
+ //  GET - Get all topics
  export async function GET() {
    try {
      await connectMongoDB();
@@ -75,7 +75,7 @@ import { NextResponse } from "next/server";
    }
  }
  
- // ✅ DELETE - Delete topic
+ //  DELETE - Delete topic
  export async function DELETE(req) {
    try {
      await connectMongoDB();
@@ -92,7 +92,7 @@ import { NextResponse } from "next/server";
    }
  }
  
- // ✅ PUT - Update topic
+ //  PUT - Update topic
  export async function PUT(req) {
    try {
      await connectMongoDB();
