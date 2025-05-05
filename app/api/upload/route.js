@@ -1,36 +1,45 @@
-
 import { v2 as cloudinary } from "cloudinary";
+import { NextResponse } from "next/server";
+
 
 cloudinary.config({
-    cloud_name: 'di9cgiman',
-     api_key: '366438782383459',
-     api_secret: 'tUxt0VXSRhEbTBCgRkSROrAyhDQ',
+  cloud_name: "di9cgiman",
+  api_key: "366438782383459",
+  api_secret: "tUxt0VXSRhEbTBCgRkSROrAyhDQ",
 });
 
-export async function POST(req) {
+export const POST = async (req) => {
   try {
-    const { file } = await req.json();
+    const formData = await req.formData();
+    const files = formData.getAll("files");
 
-    if (!file) {
-      return new Response(JSON.stringify({ error: "No file uploaded" }), { status: 400 });
+    if (!files || files.length === 0) {
+      return NextResponse.json({ error: "No files uploaded." }, { status: 400 });
     }
 
-    const base64Data = file.replace(/^data:.*;base64,/, "");
-    const buffer = Buffer.from(base64Data, "base64");
+    const uploads = await Promise.all(
+      files.map(async (file) => {
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
 
-    const uploadResult = await new Promise((resolve, reject) => {
-      const stream = cloudinary.uploader.upload_stream(
-        { folder: "portfolio_uploads", resource_type: "auto" },
-        (err, result) => {
-          if (err) reject(err);
-          else resolve(result);
-        }
-      );
-      stream.end(buffer);
-    });
+        const result = await new Promise((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            { folder: "portfolio_uploads", resource_type: "auto" },
+            (error, result) => {
+              if (error) return reject(error);
+              resolve(result);
+            }
+          );
+          uploadStream.end(buffer);
+        });
 
-    return new Response(JSON.stringify({ url: uploadResult.secure_url }), { status: 200 });
+        return result.secure_url;
+      })
+    );
+
+    return NextResponse.json({ message: "Files uploaded to Cloudinary", urls: uploads });
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+    console.error("Upload failed:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
-}
+};

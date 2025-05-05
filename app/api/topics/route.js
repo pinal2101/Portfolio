@@ -45,6 +45,8 @@ import { NextResponse } from "next/server";
        projectname,
        websitelink: formData.get("websitelink"),
        technology: formData.get("technology"),
+       tag:formData.get("tag"),
+       category:formData.get("category"),
        description: formData.get("description"),
        pagebuilder: formData.get("pagebuilder"),
        clientname: formData.get("clientname"),

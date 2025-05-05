@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function EditTopicForm({ id, topic }) {
   const router = useRouter();
@@ -115,9 +117,9 @@ export default function EditTopicForm({ id, topic }) {
             });
   
             const data = await res.json();
-            return data.url; // only the URL is needed
+            return data.url; 
           }
-          return item.url; // keep existing Cloudinary URLs
+          return item.url; 
         })
       );
   
@@ -130,14 +132,20 @@ export default function EditTopicForm({ id, topic }) {
       });
   
       if (!res.ok) throw new Error("Failed to update topic");
-  
-      router.push("/TopicList");
+      toast.success("Topic updated successfully!");
+      setTimeout(() => {
+        router.push("/TopicList");
+      }, 1000);
     } catch (error) {
       console.error("Update failed:", error);
+     toast.error("Failed to update topic!");
     }
   };
   
   return (
+    <>
+    <ToastContainer position="top-right" />
+
     <div className="edit-form-wrapper">
       <div className="form-header">
         <h2>Edit Project</h2>
@@ -186,6 +194,7 @@ export default function EditTopicForm({ id, topic }) {
       console.log("item.url",item.url);
       
       return(
+        
       <div
         key={index}
         className="flex items-center justify-between bg-gray-100 p-2 rounded-lg shadow-sm"
@@ -218,10 +227,6 @@ export default function EditTopicForm({ id, topic }) {
       )
 })}
   </div>.
-
-
-
-
   <input
     type="file"
     multiple
@@ -356,5 +361,8 @@ export default function EditTopicForm({ id, topic }) {
         }
       `}</style>
     </div>
+    </>
   );
 }
+
+
