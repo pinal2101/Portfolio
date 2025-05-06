@@ -1,6 +1,6 @@
-import User from "../../../libs/models/user";
+import User from "../../../editTopic/[id]/libs/models/user";
 import bcryptjs from 'bcryptjs';
-import { connectMongoDB } from '../../libs/mongodb';
+import connectMongoDB from "../../../editTopic/[id]/libs/mongodb";
 connectMongoDB();
 
 export const POST = async (NextRequest) => {

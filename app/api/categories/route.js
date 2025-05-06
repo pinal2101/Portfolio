@@ -1,4 +1,4 @@
-import { connectDB } from '../../libs/mongodb';
+import connectDB from "../../editTopic/[id]/libs/mongodb";
 import Category from "../../editTopic/[id]/libs/models/category";
 
 export async function GET() {

@@ -1,7 +1,7 @@
 
-import User from "../../../libs/models/user";
+import User from "../../../editTopic/[id]/libs/models/user";
 import bcryptjs from 'bcryptjs';
-import { connectMongoDB } from '../../libs/mongodb';
+import connectMongoDB from "../../../editTopic/[id]/libs/mongodb";
 import jwt from 'jsonwebtoken';
 import { NextResponse } from "next/server";
 

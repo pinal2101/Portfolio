@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { connectMongoDB } from '../../libs/mongodb';
-import Topic from '../../libs/models/topic';
+import connectMongoDB from "../../editTopic/[id]/libs/mongodb";
+
 
 // GET - Export data as JSON
 export async function GET() {

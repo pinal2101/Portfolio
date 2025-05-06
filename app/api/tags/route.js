@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { connectMongoDB } from '../../libs/mongodb';
-import Tag from "../../libs/models/tag"; // Use capital 'Tag' for model name
+import connectMongoDB from "../../editTopic/[id]/libs/mongodb";
+import Tag from "../../editTopic/[id]/libs/models/tag"; 
 
 // GET all tags
 export async function GET() {

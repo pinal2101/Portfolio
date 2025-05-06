@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { connectMongoDB } from '../../libs/mongodb';
-import Topic from '../../libs/models/topic';
-
- import cloudinary from "../../../libs/cloudinary";
+ import connectMongoDB from "../../../editTopic/[id]/libs/mongodb";
+ import Topic from "../../../editTopic/[id]/libs/models/topic";
+ import Cloudinary from "../../../editTopic/[id]/libs/cloudinary";
  
  // Optional: Upload helper if you want to upload new invoices
  async function uploadToCloudinary(file) {
@@ -10,7 +9,7 @@ import Topic from '../../libs/models/topic';
    const buffer = Buffer.from(arrayBuffer);
  
    return new Promise((resolve, reject) => {
-     cloudinary.uploader.upload_stream({ folder: "client_invoices" }, (error, result) => {
+     Cloudinary.uploader.upload_stream({ folder: "client_invoices" }, (error, result) => {
        if (error) return reject(error);
        resolve(result.secure_url);
      }).end(buffer);
