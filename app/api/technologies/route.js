@@ -1,5 +1,5 @@
-import connectDB from "../../editTopic/[id]/libs/mongodb";
-import Technology from "../../editTopic/[id]/libs/models/technology";
+import { connectDB } from '../../libs/mongodb';
+import Technology from "../../libs/models/technology";
 
 export async function GET() {
   await connectDB();

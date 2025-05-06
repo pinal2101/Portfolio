@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
- import connectMongoDB from "../../../app/editTopic/[id]/libs/mongodb";
- import Topic from "../../../app/editTopic/[id]/libs/models/topic";
- import cloudinary from "../../editTopic/[id]/libs/cloudinary";
+import { connectMongoDB } from '../../libs/mongodb';
+import Topic from '../../libs/models/topic';
+
+ import cloudinary from "../../libs/cloudinary";
  
  // Helper function to upload file to Cloudinary
  async function uploadToCloudinary(file) {

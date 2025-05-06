@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import connectMongoDB from "../../editTopic/[id]/libs/mongodb";
- import Topic from "../../../editTopic/[id]/libs/models/topic"; // or correct path to your Topic model
+import { connectMongoDB } from '../../libs/mongodb';
+import Topic from '../../libs/models/topic';
+
 
 export async function POST(request) {
   try {
