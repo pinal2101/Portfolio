@@ -1,4 +1,4 @@
-"use client"; // Declare as a Client Component
+"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -8,7 +8,7 @@ import EditTopicForm from "../../../components/EditTopicForm";
 const getTopicById = async (id) => {
   try {
     const res = await fetch(`/api/topics/${id}`, {
-      method: "GET", // ✅ Explicitly specify GET
+      method: "GET", 
       headers: {
         "Content-Type": "application/json",
       },
@@ -28,9 +28,9 @@ const getTopicById = async (id) => {
 
 export default function EditTopic() {
   const [topic, setTopic] = useState(null);
-  const [error, setError] = useState(null); // Add error state
+  const [error, setError] = useState(null); 
   const router = useRouter();
-  const { id } = useParams(); // ✅ Destructure the ID directly
+  const { id } = useParams(); 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,9 +40,9 @@ export default function EditTopic() {
   
         if (!data) {
           setError("Failed to load topic data");
-          return; // Skip setting state if data is null
+          return; 
         }
-        setTopic(data); // ✅ Ensure data is properly set
+        setTopic(data); 
       }
     };
 
@@ -50,7 +50,7 @@ export default function EditTopic() {
   }, [id]);
 
   if (error) {
-    return <p className="text-center text-red-500">{error}</p>; // Display error message
+    return <p className="text-center text-red-500">{error}</p>; 
   }
 
   if (!topic) {
@@ -59,7 +59,7 @@ export default function EditTopic() {
 
   return (
     <EditTopicForm
-      topic={topic} // Pass the whole topic object
+      topic={topic} 
       id={id}
     />
   );
