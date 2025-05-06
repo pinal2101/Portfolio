@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import DataManager from '../components/DataManager';
 
-export default function TagsPage() {
+const  TagsPage = () => {
   const [tags, setTags] = useState([]);
 
   useEffect(() => {
@@ -52,3 +52,4 @@ export default function TagsPage() {
     />
   );
 }
+export default TagsPage;

@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react';
 import DataManager from '../components/DataManager';
 
-export default function CategoriesPage() {
+
+  const CategoriesPage = () => {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
@@ -51,3 +52,4 @@ export default function CategoriesPage() {
     />
   );
 }
+export default  CategoriesPage;

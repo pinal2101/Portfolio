@@ -87,7 +87,7 @@
 'use client';
 import { useState } from 'react';
 
-export default function DataManager({ title, items, onAdd, onEdit, onDelete }) {
+const DataManager = ({ title, items, onAdd, onEdit, onDelete }) => {
   const [newItem, setNewItem] = useState('');
   const [editIndex, setEditIndex] = useState(null);
   const [editValue, setEditValue] = useState('');
@@ -174,3 +174,4 @@ export default function DataManager({ title, items, onAdd, onEdit, onDelete }) {
     </div>
   );
 }
+export default  DataManager;

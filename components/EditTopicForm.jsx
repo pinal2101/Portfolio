@@ -376,7 +376,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-export default function EditTopicForm({ id, topic }) {
+const  EditTopicForm = ({ id, topic }) => {
   const router = useRouter();
 
   const technologies = [
@@ -696,3 +696,4 @@ export default function EditTopicForm({ id, topic }) {
     </div>
   );
 }
+export default EditTopicForm;

@@ -26,7 +26,7 @@ const getTopicById = async (id) => {
   }
 };
 
-export default function EditTopic() {
+const  EditTopic = ()  => { 
   const [topic, setTopic] = useState(null);
   const [error, setError] = useState(null); 
   const router = useRouter();
@@ -64,3 +64,4 @@ export default function EditTopic() {
     />
   );
 }
+export default  EditTopic;

@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import DataManager from '../components/DataManager';
 
-export default function TechnologiesPage() {
+const  TechnologiesPage = () => {
   const [technologies, setTechnologies] = useState(['Next.js', 'Firebase', 'Tailwind']);
 
   return (
@@ -22,3 +22,4 @@ export default function TechnologiesPage() {
     />
   );
 }
+export default TechnologiesPage;

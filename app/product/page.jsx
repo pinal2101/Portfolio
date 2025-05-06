@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function ProductPage() {
+const  ProductPage = () => {
   const [products, setProducts] = useState([]);
   const router = useRouter();
 
@@ -113,3 +113,4 @@ export default function ProductPage() {
     </div>
   );
 }
+export default ProductPage;
